@@ -1,0 +1,17 @@
+Prompt: > (plane-ransac "Point_Cloud_3_No_Road_Reduced.xyz" 0.99 0.8 1)
+I chose: Confidence = 0.99, percentage = 0.8, eps = 1.
+
+Result: '(plane, support) pair
+
+'((229.94989483757064 -214.67214789636765 154.76452320423837 1042.5808362279174) . 2376)
+
+Breakdown:
+This means that the most dominant pane is characterized my the following equation:
+A = 229.94989483757064
+B = -214.67214789636765
+C = 154.76452320423837
+D = 1042.5808362279174
+
+The support (%pts that support plane) is the last element in the list :. 2376
+
+no: of iterations required: 7 , uncomment the (display iterations to obtain answer)

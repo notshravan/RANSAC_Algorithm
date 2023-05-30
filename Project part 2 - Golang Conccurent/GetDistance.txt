@@ -1,0 +1,30 @@
+V1
+func (plane *Plane3D) GetDistance(p1 *Point3D) float64 {
+	// Get the coordinates of the point on the plane that is closest to p1
+	// This is done by projecting the vector between p1 and the plane's origin onto the plane's normal vector
+	p2 := plane.ProjectPoint(p1)
+
+	// Calculate the distance between p1 and p2 using the distance formula
+	return math.Sqrt((p1.X-p2.X)*(p1.X-p2.X) + (p1.Y-p2.Y)*(p1.Y-p2.Y) + (p1.Z-p2.Z)*(p1.Z-p2.Z))
+}
+
+Explanation of the implementation:
+
+We define a method named GetDistance for the Plane3D struct, which takes a pointer to a Point3D as input and returns a float64 as output.
+
+First, we get the coordinates of the point on the plane that is closest to p1. This is done by calling the ProjectPoint method of the Plane3D struct, which returns the projection of p1 onto the plane. We store the result in a new variable named p2.
+
+Next, we calculate the distance between p1 and p2 using the distance formula. We return the result as a float64.
+
+Note that the distance returned by this method is signed, meaning it can be negative if p1 is on the opposite side of the plane from the plane's normal vector. If you want an unsigned distance, you can use the math.Abs function to take the absolute value of the distance.
+
+
+unsigned version:
+
+func (plane *Plane3D) GetDistance(p1 *Point3D) float64 {
+	// Compute the signed distance using the plane equation
+	signedDist := (plane.A*p1.X + plane.B*p1.Y + plane.C*p1.Z + plane.D)
+
+	// Return the absolute value of the signed distance as the unsigned distance
+	return math.Abs(signedDist) / math.Sqrt(plane.A*plane.A+plane.B*plane.B+plane.C*plane.C)
+}

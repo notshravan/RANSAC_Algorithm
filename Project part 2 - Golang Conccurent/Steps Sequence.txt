@@ -1,0 +1,47 @@
+Here is an outline of the steps you can follow to implement the RANSAC algorithm using a concurrent pipeline in Go:
+
+Define the required types: Point3D, Plane3D, and Plane3DwSupport, as described in the problem statement.
+
+Implement the ReadXYZ function to read an XYZ file and return a slice of Point3D.
+
+Implement the SaveXYZ function to save a slice of Point3D into an XYZ file.
+
+Implement the GetDistance method to compute the distance between two Point3D instances.
+
+Implement the GetPlane function to compute the plane defined by a set of three Point3D instances.
+
+Implement the GetNumberOfIterations function to compute the number of required RANSAC iterations based on the specified confidence and percentage values.
+
+Implement the GetSupport function to compute the support of a plane in a set of points.
+
+Implement the GetSupportingPoints function to extract the points that support the given plane and return them as a slice of Point3D.
+
+Implement the RemovePlane function to create a new slice of points in which all points belonging to the plane have been removed.
+
+In your main function, read the input XYZ file and create a corresponding slice of Point3D.
+
+Initialize a bestSupport variable of type Plane3DwSupport to all zeros.
+
+Find the number of required iterations using the GetNumberOfIterations function.
+
+Create a concurrent pipeline that includes the following components:
+
+A random point generator that selects a point from the input point cloud and transmits it to the next component.
+
+A triplet of points generator that accumulates three points and transmits them as an array to the next component.
+
+A TakeN component that stops the pipeline after receiving N arrays of points.
+
+A plane estimator component that computes the plane defined by a set of three points and transmits it to the next component.
+
+A supporting point finder component that counts the number of points in the input point cloud that support the received plane and transmits the plane parameters and the number of supporting points in a Plane3DwSupport instance.
+
+A Fan In component that multiplexes the results received from multiple supporting point finder components into one output channel.
+
+A dominant plane identifier component that receives Plane3DwSupport instances and keeps in memory the plane with the best support received so far.
+
+Once the pipeline has terminated, save the supporting points of the identified dominant plane in a file named by appending _p to the input filename, and save the original point cloud without the supporting points of the dominant plane in a file named by appending _p0 to the input filename.
+
+Repeat steps 10-14 three times to find the three most dominant planes, using the output point cloud of the previous run as input.
+
+Experiment with different numbers of threads to determine the optimal number of threads for efficiently finding the dominant planes. Plot the runtime versus number of threads for different configurations and include the graph in your submission document.

@@ -1,0 +1,63 @@
+#lang racket
+;;function that computes Plane equation from 3 points
+(define (plane P1 P2 P3)
+  ; TODO: Compute the coefficients a, b, c, and d
+  (list a b c d)
+)
+
+;; Support for a given plane
+(define (support plane points)
+  ; TODO: Count the points supporting the plane
+  (cons count plane)
+)
+
+;; Dominant plane computation
+(define (dominant-plane Ps k)
+  (if (= k 0)
+      (cons -1 '()) ; Return an invalid plane if k is 0
+      (let ((P1 (list-ref Ps (random (length Ps))))
+            (P2 (list-ref Ps (random (length Ps))))
+            (P3 (list-ref Ps (random (length Ps)))))
+        (let ((plane (plane P1 P2 P3))
+              (sup (support plane Ps)))
+          (max-cons sup (dominant-plane Ps (- k 1))))
+      )
+  )
+)
+
+;; Utility function to get the maximum of two cons pairs
+(define (max-cons a b)
+  (if (> (car a) (car b))
+      a
+      b
+)
+
+;; RANSAC number of iterations computation
+(define (ransac-number-of-iterations confidence percentage)
+  (let ((p3 (expt percentage 3)))
+    (inexact->exact (ceiling (/ (log (- 1 confidence)) (log (- 1 p3)))))
+  )
+)
+
+
+;; Main function
+(define (planeRANSAC filename confidence percentage eps)
+  (let ((Ps (readXYZ filename)))
+    (let ((k (ransac-number-of-iterations confidence percentage)))
+      (dominant-plane Ps k)
+    )
+  )
+)
+
+
+;;Function to read directly from file
+(define (readXYZ fileIn)  
+ (let ((sL (map (lambda s (string-split (car s)))  
+ (cdr (file->lines fileIn)))))  (map (lambda (L) 
+ (map (lambda (s) 
+ (if (eqv? (string->number s) #f) 
+ s 
+(string->number s))) L)) sL)))
+
+  
+

@@ -1,0 +1,135 @@
+v1:
+
+// Reads an XYZ file and returns a slice.
+func ReadXYZ(filename string) ([]Point3D, error) { //error handling: error is returned in case filenotfound encountered
+	// Open the file
+	file, err := os.Open(filename)
+	if err != nil {
+		return nil, err
+	}
+	defer file.Close()
+
+	// Read the number of points
+	var numPoints int
+	if _, err := fmt.Fscanf(file, "%d\n", &numPoints); err != nil {
+		return nil, err
+	}
+
+	// Allocate space for the points
+	points := make([]Point3D, numPoints)
+
+	// Read in each point
+	for i := 0; i < numPoints; i++ {
+		if _, err := fmt.Fscanf(file, "%f %f %f\n", &points[i].X, &points[i].Y, &points[i].Z); err != nil {
+			return nil, err
+		}
+	}
+
+	return points, nil
+}
+
+v2:
+
+// ReadXYZ reads an XYZ file and returns a slice of Point3D
+func ReadXYZ(filename string) []Point3D {
+    file, err := os.Open(filename)
+    if err != nil {
+        fmt.Println(err)
+        os.Exit(1)
+    }
+    defer file.Close()
+
+    var points []Point3D
+    scanner := bufio.NewScanner(file)
+    for scanner.Scan() {
+        line := scanner.Text()
+        fields := strings.Fields(line)
+        if len(fields) != 3 {
+            continue
+        }
+        x, err := strconv.ParseFloat(fields[0], 64)
+        if err != nil {
+            continue
+        }
+        y, err := strconv.ParseFloat(fields[1], 64)
+        if err != nil {
+            continue
+        }
+        z, err := strconv.ParseFloat(fields[2], 64)
+        if err != nil {
+            continue
+        }
+        points = append(points, Point3D{x, y, z})
+    }
+
+    if err := scanner.Err(); err != nil {
+        fmt.Println(err)
+        os.Exit(1)
+    }
+
+    return points
+}
+
+Explanation:
+
+The ReadXYZ function takes a string argument filename that specifies the name of the XYZ file to read, and returns a slice of Point3D values.
+The function opens the file using the os.Open function, which returns a pointer to a File object and an error value. If an error occurs, the function prints the error and exits the program.
+The function declares an empty slice of Point3D values to hold the points read from the file.
+A bufio.Scanner object is created to read the file line by line.
+The function loops over the lines read by the scanner, and for each line:
+a. The line is split into fields using the strings.Fields function.
+b. If the line does not contain exactly three fields, the function skips to the next line.
+c. The fields are converted from strings to float64 values using the strconv.ParseFloat function.
+d. A new Point3D value is created using the parsed values, and is appended to the points slice.
+After all lines have been read, the scanner's error value is checked. If an error occurred while reading the file, the function prints the error and exits the program.
+The function returns the slice of Point3D values containing the points read from the file.
+
+
+V3:
+
+func ReadXYZ(filename string) []Point3D {
+    var ptSlice []Point3D
+    file, err := os.Open(filename)
+    if err != nil {
+        log.Fatal(err)
+    }
+    defer file.Close()
+
+    scanner := bufio.NewScanner(file)
+    for scanner.Scan() {
+        line := scanner.Text()
+        fields := strings.Fields(line)
+        if len(fields) != 3 {
+            continue
+        }
+        x, err := strconv.ParseFloat(fields[0], 64)
+        if err != nil {
+            continue
+        }
+        y, err := strconv.ParseFloat(fields[1], 64)
+        if err != nil {
+            continue
+        }
+        z, err := strconv.ParseFloat(fields[2], 64)
+        if err != nil {
+            continue
+        }
+        ptSlice = append(ptSlice, Point3D{x, y, z})
+    }
+
+    if err := scanner.Err(); err != nil {
+        log.Fatal(err)
+    }
+
+    return ptSlice
+}
+
+
+The main changes include:
+
+Using strings.Fields to split the line into fields, which is more flexible and can handle different whitespace delimiters.
+Adding error checking for each strconv.ParseFloat call to handle any invalid or non-numeric values.
+Adding an error check for the scanner after the loop to make sure no errors occurred during scanning.
+
+
+

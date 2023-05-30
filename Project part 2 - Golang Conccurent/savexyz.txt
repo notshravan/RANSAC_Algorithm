@@ -1,0 +1,36 @@
+V2
+// SaveXYZ saves a slice of 3D points as an XYZ file.
+func SaveXYZ(filename string, points []Point3D) error {
+	// Open the file for writing.
+	file, err := os.Create(filename)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+
+	// Iterate over each point and write it to the file in the format "x y z".
+	for _, point := range points {
+		_, err := fmt.Fprintf(file, "%.3f %.3f %.3f\n", point.X, point.Y, point.Z)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+try v2 first
+
+V3
+// SaveXYZ writes a slice of Point3D to a file in XYZ format
+func SaveXYZ(filename string, points []Point3D) {
+    file, err := os.Create(filename)
+    if err != nil {
+        log.Fatal(err)
+    }
+    defer file.Close()
+
+    fmt.Fprintf(file, "x\ty\tz\n")
+    for _, pt := range points {
+        fmt.Fprintf(file, "%.3f\t%.3f\t%.3f\n", pt.X, pt.Y, pt.Z)
+    }
+}
